@@ -64,6 +64,7 @@ Parallel computing has an overhead of communication between processes. Thus, to 
 </aside>
 
 > Use parallel computing if - memory and computation is an issue
+
 > Use multithreading if I/O is an issue
 
 ### Parallel computing frameworks
