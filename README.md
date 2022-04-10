@@ -111,6 +111,7 @@ The most common persistence storage is database. There are two kind of databases
 
 **Analytical databases**
 - Optimized for analysis
+- Aggregate queries
 - Column oriented
 - OLAP: online analytical processing
 
@@ -127,3 +128,14 @@ db_engine = sqlalchemy.create_engine(connection_uri)
 query = "SELECT * FROM tableName"
 table_df = pd.read_sql(query, db_engine)
 ```
+
+### Transform
+
+Performing a task process on the extracted data. This can include:
+
+- selecting of attribute
+- Translation of values
+- Data validation, cleaning data
+- Aggregation
+- Splitting column into multiple columns
+- Join from multiple sources...
