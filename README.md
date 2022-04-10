@@ -45,7 +45,6 @@ They provide
 
 
 <aside>
-
 💡 Data warehouses mostly use [star schema](https://en.wikipedia.org/wiki/Star_schema). Star schema consists of one or more [fact table](https://en.wikipedia.org/wiki/Fact_table) that are referencing any number of [dimension tables](https://en.wikipedia.org/wiki/Dimension_table).
 </aside>
 
@@ -59,7 +58,6 @@ When dealing with big data **memory inefficiency** and **computational power** i
 Parallel computing has an overhead of communication between processes. Thus, to leverage from parallel computing the data should be big or the task is intensive.
 
 <aside>
-
 💡 [Parallel slowdown](https://en.wikipedia.org/wiki/Parallel_slowdown): parallelization of a program beyond a certain point causes the program to run slower. Typically this happens when more processing node are added and communication among processes take more time than useful processing.
 </aside>
 
@@ -75,10 +73,56 @@ Parallel computing has an overhead of communication between processes. Thus, to 
 
 ### Workflow scheduling framework
 
-  
-
 `Cron` - a bash based scheduler
 `Luigi` - created by Spotify
 `Airflow` - created by Airbnb based on DAG and later joined the Apache foundations
 
 ## Extract, Transform and Load (ETL)
+
+### Extract
+
+Data is extracted from persistence storage like file, databases and api to memory where it is suitable for processing.
+
+File can be
+- Unstructured data like plain text
+- Flat files, eg. `.csv`
+- Semi structured data json
+
+Most APIs use json to communicate data. Json has 4 atomic type: *number*, *string*, *boolean* & *null* and two composite types: *array* and *object.*
+
+```python
+import json
+
+result = json.loads('{"key": "value"}')
+print(result['key'])
+
+# output value
+```
+
+The most common persistence storage is database. There are two kind of databases:
+
+**Application databases**
+- Optimized for lots of transactions
+- Transactions are inserting or updating a row
+- Row oriented, data are insert per row
+- OLTP: online transaction processing
+
+**Analytical databases**
+- Optimized for analysis
+- Column oriented
+- OLAP: online analytical processing
+
+Database require a connection string to access them
+<aside>
+💡 `postgresql://[user[:password]@][host][:port]`
+</aside>
+
+To fetch from a database return the result in pandas DataFrame
+
+```python
+connection_uri = 'postgresql://username:password@localhost:5432/database'
+db_engine = sqlalchemy.create_engine(connection_uri)
+
+query = "SELECT * FROM tableName"
+table_df = pd.read_sql(query, db_engine)
+```
