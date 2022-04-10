@@ -57,9 +57,7 @@ When dealing with big data **memory inefficiency** and **computational power** i
 
 Parallel computing has an overhead of communication between processes. Thus, to leverage from parallel computing the data should be big or the task is intensive.
 
-<aside>
 💡 [Parallel slowdown](https://en.wikipedia.org/wiki/Parallel_slowdown): parallelization of a program beyond a certain point causes the program to run slower. Typically this happens when more processing node are added and communication among processes take more time than useful processing.
-</aside>
 
 > Use parallel computing if - memory and computation is an issue
 
@@ -68,13 +66,17 @@ Parallel computing has an overhead of communication between processes. Thus, to 
 ### Parallel computing frameworks
 
 `Hadoop` - contains **HDFS** and **MapReducer**
+
 `Hive` - created to address some of the issue of MapReducer
+
 `Spark` - perform data processing on memory, avoid disk writes
 
 ### Workflow scheduling framework
 
 `Cron` - a bash based scheduler
+
 `Luigi` - created by Spotify
+
 `Airflow` - created by Airbnb based on DAG and later joined the Apache foundations
 
 ## Extract, Transform and Load (ETL)
@@ -113,9 +115,8 @@ The most common persistence storage is database. There are two kind of databases
 - OLAP: online analytical processing
 
 Database require a connection string to access them
-<aside>
+
 💡 `postgresql://[user[:password]@][host][:port]`
-</aside>
 
 To fetch from a database return the result in pandas DataFrame
 
