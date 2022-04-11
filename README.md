@@ -46,8 +46,9 @@ They provide
 
 💡 Data warehouses mostly use [star schema](https://en.wikipedia.org/wiki/Star_schema). Star schema consists of one or more [fact table](https://en.wikipedia.org/wiki/Fact_table) that are referencing any number of [dimension tables](https://en.wikipedia.org/wiki/Dimension_table).
 
-Facts: things that happened (eg. Product order)
-Dimension: information on the world (eg. Customer information)
+> Facts: things that happened (eg. Product order)
+
+> Dimension: information on the world (eg. Customer information)
 
 ### Parallel computing
 
