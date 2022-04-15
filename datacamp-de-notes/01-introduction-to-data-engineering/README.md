@@ -138,3 +138,50 @@ Performing a task process on the extracted data. This can include:
 - Aggregation
 - Splitting column into multiple columns
 - Join from multiple sources...
+
+### Loading
+
+After transforming process we want to load/store the data to a database to perform different tasks on it at a later time. Mostly at the end of an ETL analytical databases are targeted to store the transformed data. 
+
+Although **application databases** are fast to push rows of values in, they are not suitable for fast retrieval of big data and parallel processing. 
+
+Being able to query subset of columns makes analytical(column-oriented) databases fit for parallel processing. Since application databases is row oriented, it would have to skip columns of unused rows.
+
+**MPP Databases**
+
+*Massively parallel processing databases*
+
+Where queries are performed on multiple computing nodes in parallel. It can be setup with a **shared nothing** or **shared disk architecture** but it is mostly setup with **shared nothing architecture.**
+
+Some example of MPP databases are: AWS Redshift, BigQuery, Azure SQL Data Warehouse
+
+Let’s see a use case on AWS redshift.
+
+Typically MPP databases read columnar storage format from storage bucket. Incase of redshift commonly the data is stored in S3 as a columnar format, commonly as parquet and then we connect redshift and copy the data.
+
+  
+
+```python
+# Writing data to parquet in pandas
+df.to_parquet('s3-path/data.parquet')
+# Writing data to parquet in pyspark
+df.write.parquet('s3-path/data.parquet')
+```
+Loading data in parquet format
+
+```sql
+COPY data
+FROM 's3-path/data.parquet'
+FORMAT AS parquet
+```
+Copy the data over to redshift
+
+Often we need to load transformed data to application databases such as PostgreSQL. We can easily do that using pandas `to_sql()` method.
+
+```python
+df.to_sql('table_name',
+					db_engine,
+					schema='store',
+					if_exists='replace')
+```
+store DataFrame to table_name for specified database and it table exist replace it. 
