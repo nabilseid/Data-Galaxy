@@ -127,6 +127,7 @@ db_engine = sqlalchemy.create_engine(connection_uri)
 query = "SELECT * FROM tableName"
 table_df = pd.read_sql(query, db_engine)
 ```
+*Load stringify json*
 
 ### Transform
 
@@ -167,21 +168,21 @@ df.to_parquet('s3-path/data.parquet')
 # Writing data to parquet in pyspark
 df.write.parquet('s3-path/data.parquet')
 ```
-Loading data in parquet format
+*Loading data in parquet format*
 
 ```sql
 COPY data
 FROM 's3-path/data.parquet'
 FORMAT AS parquet
 ```
-Copy the data over to redshift
+*Copy the data over to redshift*
 
 Often we need to load transformed data to application databases such as PostgreSQL. We can easily do that using pandas `to_sql()` method.
 
 ```python
 df.to_sql('table_name',
-					db_engine,
-					schema='store',
-					if_exists='replace')
+          db_engine,
+	  schema='store',
+	  if_exists='replace')
 ```
-store DataFrame to table_name for specified database and it table exist replace it. 
+*store DataFrame to table_name for specified database and it table exist replace it.*
