@@ -204,3 +204,54 @@ film_pdf_joined.to_sql("film", db_engine_dwh, schema="store", if_exists="replace
 pd.read_sql("SELECT film_id, recommended_film_ids FROM store.film", db_engine_dwh)
 ```
 *Connect with postgreSQL and store DataFrame data to a table.*
+
+### Putting it all together
+
+We have implemented each part of the ETL separately. Let’s put them together and setup a scheduler like Airflow to run our ETL on some time interval.
+
+ 
+
+```python
+def extract_table_from_df(tablename, db_engine):
+	return pd.read_sql('SELECT * FROM {}'.format(tablename), db_engine)
+
+def split_column_transform(df, column, pat, suffixes):
+	# Convert column into str and splits it on pat...
+
+def load_df_into_dwh(film_df, tablename, schema, db_engine):
+	return pd.to_sql(tablename, db_engine, schema=schema, if_exists='replace')
+
+db_engines = { ... } # contains db engine of data source and dwh
+
+def etl():
+	# Extract 
+	film_df = extract_table_from_df('film', db_engines['store'])
+	# Transform
+	film_df = split_column_transform(film_df, 'rental_rate', '.', ['_dollar'])
+	# Load
+	load_df_into_dwh(film_df, 'film', 'store', db_engines['dwh'])
+```
+*ETL sample code*
+
+Now, let’s setup a scheduler in Airflow. Airflow is workflow scheduler. The workflow follows DAGs. A unit of work is represented as task. Tasks are defined in operations. Many of operators are built in (e.g BashOperator) and you can create a custom operator.
+
+To define a workflow, we create a DAG and associate it with multiple tasks then define their relationship.
+
+```python
+from airflow.models import DAG
+from airflow.operators.python_operator import PythonOperator
+
+dag = DAG(dag_id='etl_pipeline',           # define dag id
+	  schedule_interval='0 0 * * *')   # set cron expression based interval
+
+etl_task = PythonOperator(task_id='etl_task',  # define task id
+			  python_callable=etl, # define python code to run
+			  dag=dag)             # link task with dag
+
+etl_task.set_upstream(wait_for_this_task) # define dependence tasks
+```
+*ETL sample code*
+
+To explore more about cron expression checkout [crontab](https://crontab.guru/).
+
+We will see more about Airflow on `TODO - LINK TO AIRFLOW BLOG`
