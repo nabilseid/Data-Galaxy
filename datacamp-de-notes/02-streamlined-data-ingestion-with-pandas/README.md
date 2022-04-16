@@ -1,4 +1,5 @@
-#Streamlined Data Ingestion with Pandas
+# Streamlined Data Ingestion with Pandas
+
 *This course is all about acquiring data form various sources such as spreadsheet, database, API... for analysis. We will use pandas to build pipeline to import data kept in common storage format.*
 
 ## Importing Data from Flat Files
