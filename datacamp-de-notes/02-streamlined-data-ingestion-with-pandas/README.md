@@ -85,9 +85,9 @@ If using `skiprows` will skip the column row, we have to specify `header=None` s
 tax_data_first100 = pd.read_csv('vt_tax_data_2016.csv', nrows=100)
 # read the next 100 rows after skipping 100 rows
 tax_data_next100 = pd.read_csv('vt_tax_data_2016.csv',
-															 nrows=100,
-															 skiprows=100,
-															 header=None)
+				nrows=100,
+				skiprows=100,
+				header=None)
 ```
 *Limit rows using `nrows` and `skiprows`*
 
@@ -96,11 +96,10 @@ To assign a column name we can use `names` argument. It accepts list of column n
 ```python
 # assign column name
 col_names = list(tax_data_first100)
-tax_data_next100_with_col = pd.read_csv('vt_tax_data_2016.csv',
-																				 nrows=100,
-																				 skiprows=100,
-																				 header=None,
-																				 names=col_names)
+tax_data_next100_with_col = pd.read_csv('vt_tax_data_2016.csv',																	nrows=100,
+					skiprows=100,
+					header=None,
+					names=col_names)
 ```
 *Assigning column name of load *
 
@@ -109,7 +108,7 @@ We can use a filter function like we did with `usecols` to have a custom filter.
 ```python
 # read first 100 rows that are not multiple of 3 
 tax_data_mod3 = pd.read_csv('vt_tax_data_2016.csv',
-														nrows=100,
-														skiprows=lambda row : r % 3)
+			    nrows=100,
+			    skiprows=lambda row : r % 3)
 ```
 *Applying callback of `skiprows`*
