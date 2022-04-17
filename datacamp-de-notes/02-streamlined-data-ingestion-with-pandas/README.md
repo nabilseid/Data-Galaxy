@@ -101,7 +101,7 @@ tax_data_next100_with_col = pd.read_csv('vt_tax_data_2016.csv',																	
 					header=None,
 					names=col_names)
 ```
-*Assigning column name of load *
+*Assigning column name of load*
 
 We can use a filter function like we did with `usecols` to have a custom filter. The below code reads the top 100 rows that are not multiple of 3. It skips rows that are multiple of 3 like 3, 6, 9,... until the total number of rows reach 100.
 
