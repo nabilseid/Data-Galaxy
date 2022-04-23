@@ -281,7 +281,7 @@ print(survey_data.head())
 
 Spreadsheets can be structured in whatever way a user wants. Row and columns can be merged together (usually to hold metadata) which disturbs the tabular format. Loading such excels in pandas will not result what you might expect. Like the above spreadsheet output. 
 
-![Screen Shot 2022-04-17 at 5.37.12 PM.png](./assets/sheet1.png)
+![sheet1.jpg](./assets/sheet1.jpg)
 
 If you look at the first row, it contains a title and second row contains source link. We need to remove the rows for pandas to correctly parse and load the data in this spreadsheet. Like `read_csv()`, `read_excel()`has `nrows`, `skiprows`, `usecols`... In addition to column positions and names `usecols` accepts letters (e.g “A:P”).
 
@@ -369,7 +369,7 @@ print(all_survey.Year.unique())
 
 Booleans are true / false values. They only have two values. They come handy when dealing with tasks such as filtering. Pandas treat booleans as float values. True is 1 & false is 0. Booleans can come in different format from different sources. Let’s look at a portion of fcc survey booleans data.
 
-![Screen Shot 2022-04-22 at 11.21.56 AM.png](./assets/sheet2.png)
+![sheet2.jpg](./assets/sheet2.jpg)
 
 The first column is id column. **AttendedBootcamp** and **BootcampLoan** columns have 0s and 1s. These boolean values are common among people with programming experience. **AttendedBootCampTF** and **LoanTF** columns ****have TRUEs and FALSEs. **AttendedBootcampYesNo** and **LoanYesNo** columns have Yeses and Noes. TRUE / False and Yes /  No values are commonly gathered from surveys. Let’s see how pandas interpret such boolean values and how we can handle them.
 
@@ -506,7 +506,7 @@ Let’s talk about dates and time!
 
 Dates and time have their own data type. They as stored as a string indifferent formats. Pandas infers date and time as objects by default. To tell pandas which columns are dates we use `parse_dates`keyword argument not `dtype`. The survey data has 4 columns with date values. 
 
-![Screen Shot 2022-04-22 at 3.46.09 PM.png](./assets/sheet3.png)
+![sheet3.jpg](./assets/sheet3.jpg)
 
 Their type by default is object. We want them in dateTime type. To cast to datetime on load using `parse_dates`. To change type to datetime after reading use `pd.to_datetime()`.
 
