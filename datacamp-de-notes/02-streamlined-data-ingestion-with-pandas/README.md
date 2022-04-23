@@ -623,3 +623,75 @@ print(survey_data_date['StartTimeCustom'].head())
 1	2016-03-29 21:29:10
 2	2016-03-29 21:28:21
 ```
+
+## **Importing Data from Databases**
+
+### Introduction to databases
+
+Databases are a storage systems where real world entities represent as a table. Each rows are an instance of an entity and each columns has information about the attributes. For instance employees in an organization have an employee table. Each rows in employee table is information about a single employee and each column is a specific information about employees e.g *first_name*, *last_name*...
+
+Databases differ from other storage like flat files or excels in that
+
+- Tables can be linked or related to each other by unique keys
+- Support more data
+- Support multiple simultaneous users
+- Data quality control i.e data types are specified for each rows
+
+SQL (Structural Query Language) is used to interact with databases.
+
+> Relational databases are databases whose tables are related with each other by unique keys hence the name relational database.
+> 
+
+Common relational databases are:
+
+Microsoft SQL Server, Oracle, PostgreSQL, MySQL, SQLite...
+
+SQLite differ from the other by storing databases as a computer files.
+
+**SELECT SQL**
+
+Select sql statement used to query data from a database.
+
+Basic syntax: `SELECT [column_names] FROM [table_name];`
+
+To get all data in a table: `SELECT * FROM [table_name];`
+
+By convention SQL keywords should be in ALL CAPS and end a the statement with semicolon (;) 
+
+---
+
+**Let’s practice**
+
+In this section we use [data.db](https://assets.datacamp.com/production/repositories/4412/datasets/86d5855fd30d02afe8cb563da6057190694c6b86/data.db) as a data source.
+
+Connecting to a database is a two step process
+
+- Connect with the database
+- Query the database
+
+SQLAlchemy is a package that makes creating connection with databases and interacting with them very easy. It has a `create_engine()` function to handle databases connections. It accept database URL as an input. It support different databases. Here is SQLite URL format: `sqlite:///data.db`.
+
+The pandas has `read_sql()`method to query the database and load it into a DataFrame. It has two arguments:
+
+- *query*: SQL query string to run or a table to load
+- *engine*: Connection/database engine object
+
+```python
+# load pandas and sqlalchemy 
+import pandas as pd
+from sqlalchemy import create_engine
+
+# create database engine
+engine = create_engine('sqlite:///data.db')
+
+# load entire weather table by table name
+weather = pd.read_sql('weather', engine)
+
+# load entire weather table by SELECT query
+weather_2 = pd.read_sql('SELECT * FROM weather', engine)
+
+print(weather.equals(weather_2))
+
+# output
+True
+```
