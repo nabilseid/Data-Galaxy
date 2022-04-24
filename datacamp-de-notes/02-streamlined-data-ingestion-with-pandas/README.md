@@ -771,7 +771,7 @@ distinct_borough = pd.read_sql(distinct_query, engine)
 print(distinct_borough)
 
 # output
-          borough
+                borough
 0	          BRONX
 1	      MANHATTAN
 2	       BROOKLYN
@@ -822,7 +822,7 @@ plumbing_call_counts = pd.read_sql(group_by_query, engine)
 print(plumbing_call_counts)
 
 # output
-         borough	COUNT(*) # COUNT(*): number of records of each borough type 
+               borough	COUNT(*) # COUNT(*): number of records of each borough type 
 0	         BRONX	    2016 # that are complaint_type of PLUMBING
 1	      BROOKLYN	    2702
 2	     MANHATTAN	    1413
