@@ -695,3 +695,62 @@ print(weather.equals(weather_2))
 # output
 True
 ```
+
+### ****Refining imports with SQL queries****
+
+`read_sql()` accept fewer arguments compared with `read_csv()`and `read_excel()`. We do condition and filtering in the SQL query.
+
+**SELECTing Columns**
+
+To select multiple columns pass column names separated by comma.
+
+```sql
+SELECT date, tavg FROM weather;
+```
+
+**WHERE Clauses**
+
+To select rows with conditions we use WHERE clauses. The syntax looks like
+
+```sql
+SELECT [column_names] FROM [table_name] WHERE [conditions];
+```
+
+For condition that involve numerical comparison we can use
+
+- `=` is equal to
+- `>` is greater than,  `>=`  is greater than or equal to
+- `<` is less than, `<=` is less than or equal to
+- `<>` (not equal to)
+
+For string comparison `=` to check equality. String matching is case sensitive. 
+
+Keywords `AND` and `OR` help us to combine conditions. `AND` return records that meet all conditions. `OR` return records that meet at least one condition.
+
+Let’s put the to practice.
+
+```python
+and_query = """SELECT *
+                 FROM hpd311calls
+               WHERE borough = 'BRONX'
+                 AND complaint_type = 'PLUMBING'"""
+
+bx_plumbing_calls = pd.read_sql(and_query, engine)
+
+print(bx_plumbing_calls.shape)
+
+# output
+(2016, 8)
+
+or_query = """SELECT *
+                 FROM hpd311calls
+               WHERE complaint_type = 'WATER LEAK'
+                 OR complaint_type = 'PLUMBING'"""
+
+leaks_or_plumbing = pd.read_sql(or_query, engine)
+
+print(leaks_or_plumbing.shape)
+
+#output
+(10684, 8)
+```
