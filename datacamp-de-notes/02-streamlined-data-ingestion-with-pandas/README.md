@@ -751,6 +751,81 @@ leaks_or_plumbing = pd.read_sql(or_query, engine)
 
 print(leaks_or_plumbing.shape)
 
-#output
+# output
 (10684, 8)
+```
+
+### ****More complex SQL queries****
+
+In this section we are going to use SQL features to wrangle data that cannot be done at the import stage using pandas alone. 
+
+**Getting DISTINCT values**
+
+In an analysis getting unique values is important to get a quick insight about the data. SQL has `SELECT DISTINCT` to query unique values of a column or combination of columns. Let’s get unique values of *borough* in *hpd311calls* table.
+
+```python
+distinct_query = """SELECT DISTINCT borough FROM hpd311calls"""
+
+distinct_borough = pd.read_sql(distinct_query, engine)
+
+print(distinct_borough)
+
+# output
+          borough
+0	          BRONX
+1	      MANHATTAN
+2	       BROOKLYN
+3	         QUEENS
+4	  STATEN ISLAND
+5	    Unspecified 
+```
+
+**Aggregate functions**
+
+Sometimes you might not want the detail but some summary and descriptive statistics about the data. Aggregate function gives summary and descriptive statistics about the data. SQL aggregate function are:
+
+- `SUM` `AVG` `MAX` `MIN`
+    
+    Each takes a single column name.
+    
+    ```sql
+    SELECT AVG(tmax) FROM weather; # get average of tmax column
+    SELECT SUM(awnd) FROM weather; # get sum of awnd column
+    ```
+    
+- `COUNT`
+    
+    Get number of rows that meet query conditions
+    
+    ```sql
+    SELECT COUNT(*) FROM [table_name];
+    ```
+    
+    Get number of unique values in a column
+    
+    ```sql
+    SELECT COUNT(DISTINCT [column_names]) FROM [table_name]
+    ```
+    
+**Group By**
+
+Aggregate data return a single value by themselves. More likely you want data summarized by categories. Such as average age by gender or maximum salary by occupation. `GROUP BY` clause will categorize the data by column name and then we can apply aggregate function to perform aggregation on each category.
+
+```sql
+group_by_query = """SELECT borough, COUNT(*)
+                    FROM hpd311calls
+                    WHERE complaint_type = 'PLUMBING'
+                    GROUP BY borough;"""
+
+plumbing_call_counts = pd.read_sql(group_by_query, engine)
+
+print(plumbing_call_counts)
+
+# output
+         borough	COUNT(*) # COUNT(*): number of records of each borough type 
+0	         BRONX	    2016 # that are complaint_type of PLUMBING
+1	      BROOKLYN	    2702
+2	     MANHATTAN	    1413
+3	        QUEENS	     808
+4	 STATEN ISLAND	     178
 ```
