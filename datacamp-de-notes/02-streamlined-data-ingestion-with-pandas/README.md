@@ -829,3 +829,71 @@ print(plumbing_call_counts)
 3	        QUEENS	     808
 4	 STATEN ISLAND	     178
 ```
+
+### ****Loading multiple tables with joins****
+
+In relation databases tables can be liked to one another using a key values. Every recode in a table has a unique key. The key can be a random value or have a meaning, regardless it should uniquely identify a record. Using the `JOIN` clause we can make a custom table by combining multiple tables. 
+
+```python
+join_by_query = """SELECT *
+                        FROM hpd311calls
+                            JOIN weather
+                            ON hpd311calls.created_date == weather.date;"""
+
+joined_by_date = pd.read_sql(join_by_query, engine)
+
+print(joined_by_date.shape)
+
+# output
+(91999, 21)
+```
+
+We can incorporate a `WHERE` clause after the join to filter the joined result.
+
+```python
+join_n_filtering_by_query = """SELECT *
+                                   FROM hpd311calls
+                                       JOIN weather
+                                       ON hpd311calls.created_date == weather.date
+                                   WHERE hpd311calls.complaint_type == 'HEAT/HOT WATER';"""
+
+filtered_joined = pd.read_sql(join_n_filtering_by_query, engine)
+
+print(filtered_joined.shape)
+
+# output
+(55237, 21) # notice the row size reduced after adding the WHERE clause
+```
+
+We can also do aggregation after joining tables together. If aggregating seems confusing think of doing the aggregation on a table that is the result of joining. The only difference is the syntax. Do the joining first them add aggregating and group by functions later on.
+
+```python
+join_n_agg_by_query = """SELECT hpd311calls.borough,
+                                count(*),
+                                boro_census.total_population,
+                                boro_census.housing_units
+                         FROM hpd311calls
+                             JOIN boro_census
+                             ON hpd311calls.borough == boro_census.borough
+                         GROUP BY hpd311calls.borough;"""
+
+join_agg = pd.read_sql(join_n_agg_by_query, engine)
+
+print(join_agg)
+
+# output
+	       borough	count(*)	total_population	housing_units
+0	         BRONX	   29874	         1455846	       524488
+1	      BROOKLYN	   31722	         2635121	      1028383
+2	     MANHATTAN	   20196	         1653877	       872645
+3	        QUEENS	   11384	         2339280	       850422
+4	 STATEN ISLAND	    1322	          475948	       179179
+```
+
+The above code
+
+- join *hpd311calls* and *boro_census* on borough column
+- grouped them by borough values
+- Select borough, count(*) - count of borough, total_population & housing_units
+
+💡 Here if *boro_census* has multiple records with identical borough values then when joining the first records is taken and merged with *hpd311calls.*
