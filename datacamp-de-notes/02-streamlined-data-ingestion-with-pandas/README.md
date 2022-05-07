@@ -910,14 +910,14 @@ Here is an example
 
 ```json
 {
-	'columns': ['borough', 'count(*)', 'total_population', 'housing_units'],
-	'index': [0, 1, 2, 3, 4],
-	'data': [
-		['BRONX', 29874, 1455846, 524488],
-		['BROOKLYN', 31722, 2635121, 1028383],
-	  ['MANHATTAN', 20196, 1653877, 872645],
-	  ['QUEENS', 11384, 2339280, 850422],
-	  ['STATEN ISLAND', 1322, 475948, 179179]
+	"columns": ["borough", "count(*)", "total_population", "housing_units"],
+	"index": [0, 1, 2, 3, 4],
+	"data": [
+	  ["BRONX", 29874, 1455846, 524488],
+	  ["BROOKLYN", 31722, 2635121, 1028383],
+	  ["MANHATTAN", 20196, 1653877, 872645],
+	  ["QUEENS", 11384, 2339280, 850422],
+	  ["STATEN ISLAND", 1322, 475948, 179179]
 	]
 }
 ```
@@ -1012,9 +1012,9 @@ It has dict like `{index -> {column -> value}}` structure.
   },
 	"1": {...},
 	"2": {...},
-     .
-     .
-     .
+               .
+     	       .
+               .
 }
 ```
 
@@ -1037,8 +1037,8 @@ This is the most common JSON orientation.
   },
 	{...},
 	  .
-    .
-		.
+          .
+	  .
 ]
 ```
 
@@ -1069,9 +1069,9 @@ It has dict like `{index -> [index], columns -> [columns], data ->[value
       2009
     ],
 		[...],
-			.
-			.
-			.
+		  .
+		  .
+		  .
 	]
 }
 ```
@@ -1093,8 +1093,8 @@ It contains only list of values.
   ],
 	[...],
 	  .
-		.
-		.
+	  .
+  	  .
 ]
 ```
 
@@ -1134,7 +1134,7 @@ print(nyc_death_causes_values_df.head())
 	     0	   1	   2	                           3	                    4	   5	   6
 0	     .	   . 	   .	   Nephritis, Nephrotic S...	Other Race/ Ethnicity	   F	2009
 1	  18.5  16.3   204	  Influenza (Flu) and Pne... 	             Hispanic	   F	2013
-2      .	   .	   .	  Assault (Homicide: Y87....	Other Race/ Ethnicity	   M	2012
+2            .	   .	   .	  Assault (Homicide: Y87....	Other Race/ Ethnicity	   M	2012
 3	     .	   .	   5	  Essential Hypertension ...	   Not Stated/Unknown	   F	2007
 4	  15.6	29.5	 418	  Cerebrovascular Disease...	   White Non-Hispanic	   F	2014
 ```
