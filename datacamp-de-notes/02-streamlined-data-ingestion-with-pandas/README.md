@@ -897,3 +897,264 @@ The above code
 - Select borough, count(*) - count of borough, total_population & housing_units
 
 💡 Here if *boro_census* has multiple records with identical borough values then when joining the first records is taken and merged with *hpd311calls.*
+
+## ****Importing JSON Data and Working with APIs****
+
+### Introduction to JSON
+
+Json is a data format that is based on javascript dictionary and is widely used to share data in the web since javascript is mainly used to develop web services. 
+
+Json doesn’t have tabular format. It is a semi structured data storage. This means records don’t have all the same set of attributes. Json organize data into a collection of objects and objects are collection of attribute-value pair. Objects are nest inside other objects to form a relationship.
+
+Here is an example
+
+```json
+{
+	"columns": ["borough", "count(*)", "total_population", "housing_units"],
+	"index": [0, 1, 2, 3, 4],
+	"data": [
+	  ["BRONX", 29874, 1455846, 524488],
+	  ["BROOKLYN", 31722, 2635121, 1028383],
+	  ["MANHATTAN", 20196, 1653877, 872645],
+	  ["QUEENS", 11384, 2339280, 850422],
+	  ["STATEN ISLAND", 1322, 475948, 179179]
+	]
+}
+```
+
+This is a simple json format which has **columns**, **index** and **data** attributes and multiple values. This particular json structure can be read by pandas using `from_json()` function into a dataframe.
+
+`from_json()` takes a sting path to a json file or json data as string. We can use `json.dumps()` function to convert loaded json into a string. Like other pandas *read* functions here we can give explicit types for columns using `dtype` keyword argument.
+
+Json can take different formats which is impossible to understand all and convert to tabular format for pandas. There are 5 json formats that are supported by pandas.
+
+- `'split'` : dict like `{index -> [index], columns -> [columns], data ->[values]}`
+- `'records'` : list like `[{column -> value}, ... , {column -> value}]`
+- `'index'` : dict like `{index -> {column -> value}}`
+- `'columns'` : dict like `{column -> {index -> value}}`
+- `'values'` : just the values array
+
+To tell pandas which format a json follows we use `orient` keyword argument. The default orient is `columns`. Trying to read formats any other the listed above will result in an error.
+
+For this section we are going to use [New York city leading causes of death date](https://data.cityofnewyork.us/api/views/jb7j-dtam/rows.json?accessType=DOWNLOAD). Initially the data is not in a supported format. We will have to extract the data we want and structure it in one of the orients before we can convert it into a dataframe.
+
+<aside>
+💡 If the link is broken go [here](https://data.cityofnewyork.us/Health/New-York-City-Leading-Causes-of-Death/jb7j-dtam/data) and generate a new download link in export tab.
+
+</aside>
+
+```python
+import json
+from urllib.request import urlopen 
+
+# json data path.
+url_path = "https://data.cityofnewyork.us/api/views/jb7j-dtam/rows.json?accessType=DOWNLOAD"
+
+with urlopen(url_path) as res:
+    # load json file from url
+    data = json.loads(res.read().decode())
+    # extract column names from metadata with in the data
+    columns = [column['name'] for column in data['meta']['view']['columns']]
+    data = data['data']
+    # reconstract the data in a format that pandas will understand
+    nyc_death_causes = {'columns': columns, 'data': data}
+    # convert dict type to string type then read it as a json
+    nyc_death_causes_df = pd.read_json(json.dumps(nyc_death_causes), orient='split')
+    # extract only the values we are interested in
+    nyc_death_causes_df = nyc_death_causes_df[['Age Adjusted Death Rate', 
+                                               'Death Rate', 'Deaths',
+                                               'Leading Cause', 'Race Ethnicity',
+                                               'Sex', 'Year']]
+    # save the data in different json format
+    nyc_death_causes_df.to_json('nyc_death_causes_split.json', orient='split')
+    nyc_death_causes_df.to_json('nyc_death_causes_records.json', orient='records')
+    nyc_death_causes_df.to_json('nyc_death_causes_index.json', orient='index')
+    nyc_death_causes_df.to_json('nyc_death_causes_columns.json', orient='columns')
+    nyc_death_causes_df.to_json('nyc_death_causes_values.json', orient='values')
+```
+
+This code load the row data into python dictionary then restructure it to `columns`orient. After than it loads it into dataframe to extract subset of the data and save it as different json orients.
+
+Let’s look at what are this orients
+
+**Column orient**
+
+It has dict like `{column -> {index -> value}}` structure.
+
+Column orientation is most space efficient since it avoid column name repetition unlike record orientation.
+
+```json
+{
+	"Age Adjusted Death Rate": { "0": ".", "1": "18.5", "2": ".", ... },
+	"Death Rate": {...},
+	"Deaths": {...},
+	"Leading Cause": {...},
+	"Race Ethnicity": {...},
+	"Sex": {...},
+	"Year": {...}
+}
+```
+
+**Index orient**
+
+It has dict like `{index -> {column -> value}}` structure.
+
+```json
+{
+	"0": {
+		"Age Adjusted Death Rate": ".",
+    "Death Rate": ".",
+    "Deaths": ".",
+    "Leading Cause": "Nephritis, Nephrotic Syndrome and Nephrisis (N00-N07, N17-N19, N25-N27)",
+    "Race Ethnicity": "Other Race/ Ethnicity",
+    "Sex": "F",
+    "Year": 2009
+  },
+	"1": {...},
+	"2": {...},
+               .
+     	       .
+               .
+}
+```
+
+**Records orient**
+
+It has list like `[{column -> value}, ... , {column -> value}]` structure.
+
+This is the most common JSON orientation.
+
+```json
+[
+	{
+    "Age Adjusted Death Rate": ".",
+    "Death Rate": ".",
+    "Deaths": ".",
+    "Leading Cause": "Nephritis, Nephrotic Syndrome and Nephrisis (N00-N07, N17-N19, N25-N27)",
+    "Race Ethnicity": "Other Race/ Ethnicity",
+    "Sex": "F",
+    "Year": 2009
+  },
+	{...},
+	  .
+          .
+	  .
+]
+```
+
+**Split orient**
+
+It has dict like `{index -> [index], columns -> [columns], data ->[values]}` structure.
+
+```json
+{
+	"columns": [
+    "Age Adjusted Death Rate",
+    "Death Rate",
+    "Deaths",
+    "Leading Cause",
+    "Race Ethnicity",
+    "Sex",
+    "Year"
+  ],
+	"index": [0,1,2...],
+	"data": [
+		[
+      ".",
+      ".",
+      ".",
+      "Nephritis, Nephrotic Syndrome and Nephrisis (N00-N07, N17-N19, N25-N27)",
+      "Other Race/ Ethnicity",
+      "F",
+      2009
+    ],
+		[...],
+		  .
+		  .
+		  .
+	]
+}
+```
+
+**Values orient**
+
+It contains only list of values.
+
+```json
+[
+	[
+    ".",
+    ".",
+    ".",
+    "Nephritis, Nephrotic Syndrome and Nephrisis (N00-N07, N17-N19, N25-N27)",
+    "Other Race/ Ethnicity",
+    "F",
+    2009
+  ],
+	[...],
+	  .
+	  .
+  	  .
+]
+```
+
+Now we have seen different json orientation, let’s now load different json orientation into dataframes.
+
+```python
+nyc_death_causes_split_df = pd.read_json('nyc_death_causes_split.json', orient='split')
+nyc_death_causes_records_df = pd.read_json('nyc_death_causes_records.json', orient='records')
+nyc_death_causes_index_df = pd.read_json('nyc_death_causes_index.json', orient='index')
+nyc_death_causes_columns_df = pd.read_json('nyc_death_causes_columns.json', orient='columns')
+nyc_death_causes_values_df = pd.read_json('nyc_death_causes_values.json', orient='values')
+
+print(nyc_death_causes_split_df.head())
+
+# output
+  Age Adjusted Death Rate	 Death Rate	 Deaths	               Leading Cause	       Race Ethnicity	 Sex	Year
+0	                      .	          . 	    .	   Nephritis, Nephrotic S...	Other Race/ Ethnicity	   F	2009
+1	                   18.5	       16.3	    204	  Influenza (Flu) and Pne... 	             Hispanic	   F	2013
+2	                      .	          .	      .	  Assault (Homicide: Y87....	Other Race/ Ethnicity	   M	2012
+3	                      .	          .	      5	  Essential Hypertension ...	   Not Stated/Unknown	   F	2007
+4	                   15.6	       29.5	    418	  Cerebrovascular Disease...	   White Non-Hispanic	   F	2014
+
+print(nyc_death_causes_split_df.equals(nyc_death_causes_records_df))
+print(nyc_death_causes_split_df.equals(nyc_death_causes_index_df))
+print(nyc_death_causes_split_df.equals(nyc_death_causes_columns_df))
+print(nyc_death_causes_split_df.equals(nyc_death_causes_values_df))
+
+# output
+True
+True
+True
+False # this is false because with value orientation the column and index info are lost
+
+print(nyc_death_causes_values_df.head())
+
+# output
+	     0	   1	   2	                           3	                    4	   5	   6
+0	     .	   . 	   .	   Nephritis, Nephrotic S...	Other Race/ Ethnicity	   F	2009
+1	  18.5  16.3   204	  Influenza (Flu) and Pne... 	             Hispanic	   F	2013
+2            .	   .	   .	  Assault (Homicide: Y87....	Other Race/ Ethnicity	   M	2012
+3	     .	   .	   5	  Essential Hypertension ...	   Not Stated/Unknown	   F	2007
+4	  15.6	29.5	 418	  Cerebrovascular Disease...	   White Non-Hispanic	   F	2014
+```
+
+### Introudction to APIs
+
+Application programming interface or API is a defined way to interact with applications. Mostly APIs are a we url where you can request the application to do something or to give you something. In python we can make API requests using buildin `urllib.request.urlopen()` function or we can use [Requests](https://docs.python-requests.org/en/latest/) package.
+
+The response from API requests is usually json but it can be any variety of types.
+
+```python
+import requests
+
+url_path = "https://data.cityofnewyork.us/api/views/jb7j-dtam/rows.json?accessType=DOWNLOAD"
+
+res = requests.get(url_path)
+print(res.json().keys())
+
+# output
+dict_keys(['meta', 'data'])
+```
+
+With `Requests` package it only took us two lines to make the API request.
