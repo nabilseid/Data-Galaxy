@@ -46,5 +46,14 @@ Values in the tuple (20, 20, 20) form an Equilateral triangle, because A ≡ B �
 Values in the tuple (20, 21, 22) form a Scalene triangle, because A ≠ B ≠ C.
 Values in the tple (13, 14, 30) cannot form a triangle because the combined 
 value of sides A and B is not larger than that of side C.
+*/
 
-
+-- solution
+SELECT
+    CASE 
+        WHEN A = B AND A = C THEN 'Equilateral'
+        WHEN A + B <= C THEN 'Not A Triangle'
+        WHEN A = B OR B = C OR A = C THEN 'Isosceles'
+        ELSE 'Scalene' -- WHEN A <> B AND A <> C AND B <> C THEN 'Scalene'
+    END
+FROM triangles;
