@@ -52,7 +52,7 @@ value of sides A and B is not larger than that of side C.
 SELECT
     CASE 
         WHEN A = B AND A = C THEN 'Equilateral'
-        WHEN A + B <= C THEN 'Not A Triangle'
+        WHEN A + B <= C OR A + C <= B OR B + C <= A THEN 'Not A Triangle'
         WHEN A = B OR B = C OR A = C THEN 'Isosceles'
         ELSE 'Scalene' -- WHEN A <> B AND A <> C AND B <> C THEN 'Scalene'
     END
