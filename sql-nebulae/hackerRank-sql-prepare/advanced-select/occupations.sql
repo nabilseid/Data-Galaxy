@@ -55,4 +55,5 @@ per occupation (in this case, the Professor and Actor columns) are filled
 with NULL values.
 */
 
-
+-- ref https://linuxhint.com/mysql_pivot/#:~:text=A%20database%20table%20can%20store,a%20table%20into%20column%20values.
+-- https://www.databasestar.com/mysql-pivot/
