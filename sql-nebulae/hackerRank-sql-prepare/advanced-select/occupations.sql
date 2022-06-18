@@ -55,5 +55,40 @@ per occupation (in this case, the Professor and Actor columns) are filled
 with NULL values.
 */
 
+-- MS SQL Server solution
+WITH ranked AS ( -- with row position cte 
+    SELECT
+        a.Occupation,
+        a.Name,
+        (SELECT COUNT(*)
+         FROM Occupations AS b
+         WHERE a.occupation = b.occupation AND a.Name > b.Name) AS Pos
+    FROM Occupations AS a
+),
+pivot_table AS ( -- pivot table cte
+    SELECT * FROM
+    (
+        SELECT Occupation, Name, Pos
+        FROM ranked
+    ) temp_t
+    PIVOT(
+        Min(Name)
+        FOR Occupation IN (Doctor, Professor, Singer, Actor)
+    ) AS temp_pivot
+)
+
+-- Using select with case and arranging names using pos 
+SELECT
+    MIN(CASE WHEN Occupation = 'Doctor' THEN Name ELSE NULL END) AS Doctor,
+    MIN(CASE WHEN Occupation = 'Professor' THEN Name ELSE NULL END) AS Professor,
+    MIN(CASE WHEN Occupation = 'Singer' THEN Name ELSE NULL END) AS Singer,
+    MIN(CASE WHEN Occupation = 'Actor' THEN Name ELSE NULL END) AS Actor
+FROM ranked
+GROUP BY Pos;
+
+-- Using pivot table, PIVOT will do the pivoting 
+SELECT Doctor, Professor, Singer, Actor
+FROM pivot_table;
+
 -- ref https://linuxhint.com/mysql_pivot/#:~:text=A%20database%20table%20can%20store,a%20table%20into%20column%20values.
 -- https://www.databasestar.com/mysql-pivot/
