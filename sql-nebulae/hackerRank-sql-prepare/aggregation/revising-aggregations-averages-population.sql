@@ -1,5 +1,6 @@
 /*
-Query the total population of all cities in CITY where District is California.
+Query the average population for all cities in CITY, rounded down to the 
+nearest integer.
 
 Input Format
 
@@ -17,6 +18,5 @@ The CITY table is described as follows:
 */
 
 -- solution
-SELECT SUM(POPULATION)
-FROM CITY
-WHERE DISTRICT = 'California';
+SELECT AVG(POPULATION)
+FROM CITY;
