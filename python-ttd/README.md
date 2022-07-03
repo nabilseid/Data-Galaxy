@@ -2,7 +2,7 @@
 Unit tests are sefety net to catch bugs before they go to production.
 They validate the positive and negative out come of a function.
 
-Every unit tests should follow three steps, setup, action and asser.
+Every unit tests should follow three steps: `setup`, `action` and `asser`.
 ```python
 # Production code
 def str_len(theStr):
@@ -19,7 +19,7 @@ TDD is a process where failing unit test is written before the production code.
 It forces a well structured code, more test coverage and gives confidence to 
 change the code.
 
-It has three workflows: RED GREEN and REFACTOR.
+It has three workflows: `RED`, `GREEN` and `REFACTOR`.
 
 RED - write a failing unit test.
 GREEN - write just enough production code to make that test pass.
